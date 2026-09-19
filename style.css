@@ -145,7 +145,7 @@ main>.final{background:radial-gradient(circle at 50% 40%,#4b2335 0%,#25111b 65%,
 
 /* 1–9 CINEMATIC FINISH */
 html{scroll-behavior:smooth}
-main>.hero,main>#surprise,main>.dreams,main>.cake-section,main>.letter,main>.final{overflow:hidden}
+main>.hero,main>#surprise,main>.dreams,main>.cake-section,main>.letter,main>.final{overflow:visible}
 main>.hero.scene-active,main>#surprise.scene-active,main>.dreams.scene-active,main>.cake-section.scene-active,main>.letter.scene-active,main>.final.scene-active{animation:sceneArrival 1.15s cubic-bezier(.22,1,.36,1)}
 @keyframes sceneArrival{0%{filter:brightness(.72);transform:scale(.985)}55%{filter:brightness(1.08);transform:scale(1.006)}100%{filter:brightness(1);transform:scale(1)}}
 body[data-scene="letter"]{--scene-glow:#f6c4d5}body[data-scene="wish"]{--scene-glow:#ffd27a}body[data-scene="final"]{--scene-glow:#f6a8c3}
