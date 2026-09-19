@@ -8,6 +8,18 @@ setTimeout(function(){intro.classList.add('cinematic-ready');},120);
 setTimeout(function(){intro.classList.add('cinematic-finish');},4300);
 setTimeout(function(){intro.classList.add('gone');main.classList.remove('dimmed');main.classList.add('ready');},5200);
 updateCountdown();setInterval(updateCountdown,1000);
+
+/* Automatic birthday-night mode: activates on September 20 and stays subtle elsewhere. */
+const midnightBadge=document.querySelector('#midnightBadge');
+function updateMidnightMode(){
+  const now=new Date();
+  const isBirthday=now.getMonth()===8&&now.getDate()===20;
+  const isNight=isBirthday&&(now.getHours()>=20||now.getHours()<6);
+  document.body.classList.toggle('midnight-mode',isNight);
+  if(midnightBadge) midnightBadge.classList.toggle('hidden',!isNight);
+}
+updateMidnightMode();
+setInterval(updateMidnightMode,30000);
 open.addEventListener('click',function(){surprise.classList.remove('hidden');surprise.scrollIntoView({behavior:'smooth',block:'start'});});
 let q=0;document.querySelectorAll('.question button').forEach(function(btn){btn.addEventListener('click',function(){const qs=document.querySelectorAll('.question');if(btn.dataset.answer==='right')q++;qs.forEach(x=>x.classList.remove('active'));if(q<qs.length)qs[q].classList.add('active');else document.querySelector('.quiz-result').classList.remove('hidden');});});
 const letterBtn=document.querySelector('#letterBtn'),modal=document.querySelector('#loveModal');letterBtn.addEventListener('click',function(){modal.classList.remove('hidden');document.querySelectorAll('.love-popup').forEach(x=>x.classList.add('hidden'));document.querySelector('#lovePopup1').classList.remove('hidden');});document.querySelector('#loveClose').addEventListener('click',function(){modal.classList.add('hidden');});
@@ -43,9 +55,7 @@ const dots=[...slideNav.querySelectorAll('.slide-dot')];
 const slideObserver=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){const index=slideItems.findIndex(function(item){return item.el===entry.target;});dots.forEach(function(dot,i){dot.classList.toggle('active',i===index);});slideLabel.textContent=slideItems[index].label;musicMood=slideItems[index].label.toLowerCase();document.body.dataset.scene=slideItems[index].label.toLowerCase();entry.target.classList.add('scene-active');setTimeout(function(){entry.target.classList.remove('scene-active');},1200);}});},{threshold:.55});slideItems.forEach(function(item){slideObserver.observe(item.el);});
 const progress=document.createElement('div');progress.className='slide-progress';document.body.appendChild(progress);window.addEventListener('scroll',function(){const max=document.documentElement.scrollHeight-window.innerHeight;progress.style.width=(max>0?(window.scrollY/max)*100:0)+'%';},{passive:true});
 document.querySelectorAll('.reveal').forEach(function(el){revealObserver.observe(el);});
-let touchStartY=0,touchStartX=0;
-document.addEventListener('touchstart',function(e){if(e.touches.length===1){touchStartY=e.touches[0].clientY;touchStartX=e.touches[0].clientX;}},{passive:true});
-document.addEventListener('touchend',function(e){if(e.changedTouches.length!==1)return;const dy=e.changedTouches[0].clientY-touchStartY,dx=e.changedTouches[0].clientX-touchStartX;if(Math.abs(dy)<70||Math.abs(dy)<Math.abs(dx)*1.15)return;let current=slideItems.findIndex(function(item){return Math.abs(item.el.getBoundingClientRect().top)<window.innerHeight*.35;});if(current<0)return;let next=Math.max(0,Math.min(slideItems.length-1,current+(dy<0?1:-1)));if(next!==current)slideItems[next].el.scrollIntoView({behavior:'smooth',block:'start'});},{passive:true});
+/* Native mobile scrolling is intentionally left untouched. The old swipe-to-slide handler could capture normal vertical scrolling and leave the page stuck between sections. */
 function enterBirthdayMode(){document.body.classList.add('birthday-mode');if(birthdayMode){birthdayMode.classList.remove('hidden');birthdayMode.textContent='Exit Birthday Mode';}if(musicOn)musicToggle.classList.add('mode-hidden');document.querySelector('.slide-nav')?.classList.add('mode-hidden');document.querySelector('.slide-label')?.classList.add('mode-hidden');document.querySelector('.slide-progress')?.classList.add('mode-hidden');}
 function exitBirthdayMode(){document.body.classList.remove('birthday-mode');if(birthdayMode){birthdayMode.classList.add('hidden');birthdayMode.textContent='Birthday Mode ✨';}musicToggle.classList.remove('mode-hidden');document.querySelector('.slide-nav')?.classList.remove('mode-hidden');document.querySelector('.slide-label')?.classList.remove('mode-hidden');document.querySelector('.slide-progress')?.classList.remove('mode-hidden');}
 birthdayMode?.addEventListener('click',function(){document.body.classList.contains('birthday-mode')?exitBirthdayMode():enterBirthdayMode();});
