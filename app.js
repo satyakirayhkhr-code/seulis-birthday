@@ -39,26 +39,29 @@ document.addEventListener('click',function(){if(!musicOn)startMusic();},{once:tr
 document.querySelectorAll('.section,.card,.final').forEach(function(el,index){el.classList.add('reveal');if(index<4)el.classList.add('reveal-delay-'+Math.min(index+1,4));});
 const revealObserver=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add('is-visible');revealObserver.unobserve(entry.target);}});},{threshold:.14});
 
-/* Slide-by-slide navigation */
-const slideItems=[
-  {el:document.querySelector('.hero'),label:'Birthday'},
-  {el:document.querySelector('#surprise'),label:'Love'},
-  /* relationship story removed */
-  {el:document.querySelector('.dreams'),label:'Dreams'},
-  {el:document.querySelector('.cake-section'),label:'Wish'},
-  {el:document.querySelector('.letter'),label:'Letter'},
-  {el:document.querySelector('.final'),label:'Forever'}
+/* Continuous-scroll scene tracking — no slide navigation or snap behavior */
+const sceneItems=[
+  {el:document.querySelector('.hero'),label:'hero'},
+  {el:document.querySelector('#surprise'),label:'love'},
+  {el:document.querySelector('.dreams'),label:'dreams'},
+  {el:document.querySelector('.cake-section'),label:'wish'},
+  {el:document.querySelector('.letter'),label:'letter'},
+  {el:document.querySelector('.final'),label:'final'}
 ].filter(function(item){return item.el;});
-const slideNav=document.createElement('nav');slideNav.className='slide-nav';slideNav.setAttribute('aria-label','Birthday slides');
-const slideLabel=document.createElement('div');slideLabel.className='slide-label';document.body.appendChild(slideLabel);slideItems.forEach(function(item,index){const dot=document.createElement('button');dot.className='slide-dot';dot.type='button';dot.setAttribute('aria-label','Go to '+item.label+' slide');dot.addEventListener('click',function(){item.el.scrollIntoView({behavior:'smooth',block:'start'});});slideNav.appendChild(dot);});document.body.appendChild(slideNav);
-const dots=[...slideNav.querySelectorAll('.slide-dot')];
-const slideObserver=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){const index=slideItems.findIndex(function(item){return item.el===entry.target;});dots.forEach(function(dot,i){dot.classList.toggle('active',i===index);});slideLabel.textContent=slideItems[index].label;musicMood=slideItems[index].label.toLowerCase();document.body.dataset.scene=slideItems[index].label.toLowerCase();entry.target.classList.add('scene-active');setTimeout(function(){entry.target.classList.remove('scene-active');},1200);}});},{threshold:.25});slideItems.forEach(function(item){slideObserver.observe(item.el);});
-const progress=document.createElement('div');progress.className='slide-progress';document.body.appendChild(progress);window.addEventListener('scroll',function(){const max=document.documentElement.scrollHeight-window.innerHeight;progress.style.width=(max>0?(window.scrollY/max)*100:0)+'%';},{passive:true});
-document.querySelectorAll('.reveal').forEach(function(el){revealObserver.observe(el);});
-/* Native mobile scrolling is intentionally left untouched. The old swipe-to-slide handler could capture normal vertical scrolling and leave the page stuck between sections. */
-function enterBirthdayMode(){document.body.classList.add('birthday-mode');if(birthdayMode){birthdayMode.classList.remove('hidden');birthdayMode.textContent='Exit Birthday Mode';}if(musicOn)musicToggle.classList.add('mode-hidden');document.querySelector('.slide-nav')?.classList.add('mode-hidden');document.querySelector('.slide-label')?.classList.add('mode-hidden');document.querySelector('.slide-progress')?.classList.add('mode-hidden');}
-function exitBirthdayMode(){document.body.classList.remove('birthday-mode');if(birthdayMode){birthdayMode.classList.add('hidden');birthdayMode.textContent='Birthday Mode ✨';}musicToggle.classList.remove('mode-hidden');document.querySelector('.slide-nav')?.classList.remove('mode-hidden');document.querySelector('.slide-label')?.classList.remove('mode-hidden');document.querySelector('.slide-progress')?.classList.remove('mode-hidden');}
-birthdayMode?.addEventListener('click',function(){document.body.classList.contains('birthday-mode')?exitBirthdayMode():enterBirthdayMode();});
+const sceneObserver=new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(!entry.isIntersecting)return;
+    musicMood=entry.target===document.querySelector('#surprise')?'love':
+      entry.target.classList.contains('dreams')?'dreams':
+      entry.target.classList.contains('cake-section')?'wish':
+      entry.target.classList.contains('letter')?'letter':
+      entry.target.classList.contains('final')?'final':'hero';
+    document.body.dataset.scene=musicMood;
+    entry.target.classList.add('scene-active');
+    setTimeout(function(){entry.target.classList.remove('scene-active');},1200);
+  });
+},{threshold:.25});
+sceneItems.forEach(function(item){sceneObserver.observe(item.el);});
 
 document.addEventListener('pointerdown',function(e){const b=e.target.closest('button');if(!b)return;const r=b.getBoundingClientRect();const s=document.createElement('span');s.className='click-ripple';s.style.left=(e.clientX-r.left)+'px';s.style.top=(e.clientY-r.top)+'px';b.appendChild(s);setTimeout(()=>s.remove(),650);},{passive:true});
 function createPetal(){const p=document.createElement('span');p.className='romantic-petal';p.textContent=Math.random()>.5?'♡':'✦';p.style.left=(Math.random()*100)+'vw';p.style.setProperty('--petal-drift',((Math.random()*160)-80)+'px');p.style.setProperty('--petal-duration',(6+Math.random()*6)+'s');document.body.appendChild(p);setTimeout(function(){p.remove();},13000);}setInterval(function(){if(!document.hidden)createPetal();},900);for(let i=0;i<5;i++)setTimeout(createPetal,i*350);
