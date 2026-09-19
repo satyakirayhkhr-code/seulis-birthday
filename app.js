@@ -38,6 +38,7 @@ document.addEventListener('click',function(){if(!musicOn)startMusic();},{once:tr
 /* Scroll reveals + soft romantic floating hearts */
 document.querySelectorAll('.section,.card,.final').forEach(function(el,index){el.classList.add('reveal');if(index<4)el.classList.add('reveal-delay-'+Math.min(index+1,4));});
 const revealObserver=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add('is-visible');revealObserver.unobserve(entry.target);}});},{threshold:.14});
+document.querySelectorAll('.section,.card,.final').forEach(function(el){revealObserver.observe(el);});
 
 /* Continuous-scroll scene tracking — no slide navigation or snap behavior */
 const sceneItems=[
