@@ -91,12 +91,4 @@ const modalObserver=new MutationObserver(function(){
   }
 });
 modalObserver.observe(modal,{attributes:true,attributeFilter:['class']});
-let lastSlide=-1;
-slideItems.forEach(function(item,index){
-  item.el.addEventListener('scrollend',function(){
-    if(index!==lastSlide){
-      lastSlide=index;
-      burstAt(window.innerWidth*.5,window.innerHeight*.72,7);
-    }
-  });
-});
+/* Legacy slide handler removed — continuous scrolling only. */
