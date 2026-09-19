@@ -192,3 +192,26 @@ html{scroll-snap-type:y proximity;scroll-padding-top:0}
 main{overflow:visible}
 main>.hero,main>#surprise,main>.dreams,main>.cake-section,main>.letter,main>.final{height:auto;min-height:100svh;overflow:visible;scroll-snap-stop:normal}
 @media(max-width:650px){main>.hero,main>#surprise,main>.dreams,main>.cake-section,main>.letter,main>.final{height:auto;min-height:100svh;overflow:visible}}
+/* FINAL CONTINUOUS SCROLL FIX — remove all slide mechanics */
+html{scroll-snap-type:none!important;scroll-padding:0!important;scroll-behavior:smooth!important}
+body{overflow-x:hidden!important;overflow-y:auto!important}
+main{display:block!important;overflow:visible!important;scroll-snap-type:none!important}
+main>.hero,main>#surprise,main>.dreams,main>.cake-section,main>.letter,main>.final{
+  display:grid!important;
+  height:auto!important;
+  min-height:100svh!important;
+  max-height:none!important;
+  overflow:visible!important;
+  scroll-snap-align:none!important;
+  scroll-snap-stop:normal!important;
+}
+main>#surprise,.card,.section,.final{overflow:visible!important}
+.slide-nav,.slide-label,.slide-progress{display:none!important}
+@media(max-width:650px){
+  html{scroll-snap-type:none!important;overscroll-behavior-y:auto!important}
+  body{overflow-y:auto!important}
+  main{overflow:visible!important}
+  main>.hero,main>#surprise,main>.dreams,main>.cake-section,main>.letter,main>.final{
+    height:auto!important;min-height:100svh!important;max-height:none!important;overflow:visible!important;
+  }
+}
